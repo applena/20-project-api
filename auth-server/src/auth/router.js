@@ -4,6 +4,7 @@ const express = require('express');
 const authRouter = express.Router();
 
 const User = require('./users-model.js');
+const Role = require('./roles-model');
 const auth = require('./middleware.js');
 const oauth = require('./oauth/google.js');
 
@@ -27,6 +28,11 @@ authRouter.post('/signin', auth(), (req, res, next) => {
   res.cookie('auth', req.token);
   res.send(req.token);
 });
+
+authRouter.post('/newRole', auth(), (req, res, neext) => {
+  let role = new Role(req.body);
+  role.save();
+})
 
 authRouter.get('/oauth', (req,res,next) => {
   oauth.authorize(req)
