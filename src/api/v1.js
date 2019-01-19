@@ -25,7 +25,7 @@ const swaggerDocs = require(`${cwd}/docs/config/swagger.json`);
 router.use('/api/v1/doc/', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // API Routes
-router.get('/api/v1/:model', auth(), handleGetAll);
+router.get('/api/v1/:model', auth('read'), handleGetAll);
 router.post('/api/v1/:model', auth(), handlePost);
 
 router.get('/api/v1/:model/:id', auth(), handleGetOne);
