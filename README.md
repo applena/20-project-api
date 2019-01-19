@@ -37,19 +37,214 @@ Usage Notes or examples
 * Endpoint: `/bing/zing/`
   * Returns a JSON object with xyz in it.
   
-#### Tests
-* CREATE AN ADMIN: the frist step is to create a new Role that has admin prividledges. `http post :3000/newRole role=admin capabilities=[read,write,update,delete]` Once you have an admin role set up, you can use this role to crate a new user.
+# Tests
 
-* Upon successfull completion of your admin role creation, you should recieve a token. 
+## Create User
 
-* CREATE A NEW USER: now that the admin role exists, create a new user: `http POST :3000/signup username=super password=yo role=admin'
+```bash
+ROLE_NAME=user
+USER_NAME=bob
+CAPABILITIES='["read"]'
 
-* GENERATE A KEY: Upon successfull completeion of your new admin user, you will recieve a new token. Use this token to generate a key that never expires and can be used muliple time: `http POST :3000/key authorization:bearer\ {your token goes here}`
+# creates a user role and captures the JWT in $USER_TOKEN
+ROLE_TOKEN=$(http -h POST :3000/newRole role=$ROLE_NAME capabilities:=$CAPABILITIES | grep token | awk '{print $2}')
 
-* this will generate a key that you can use multiple times that never expires with admin prividlidges - like this one: `http POST :3000/key authorization:bearer\ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNDM1NzkzYWU4ZTc5MjAyMjRlZTc5NyIsImNhcGFiaWxpdGllcyI6WyJyZWFkLHdyaXRlIl0sInR5cGUiOiJ1c2VyIiwiaWF0IjoxNTQ3OTE3MjAzLCJleHAiOjE1NDc5MTgxMDN9.j-lljuxYaBXY0XK6nDuziWP6mWfLalcqXa9dZz4oLRQ`
+# Create a user with the role
+USER_TOKEN=$(http POST :3000/signup username=$USER_NAME password=yo role=user)
 
-* ADD A PLAYER TO THE /api/v1/players PATH: using the key that we generated (or the one provided), enter the following: `http :3000/api/v1/players name=playersTest position=P throws=R bats=R team=CATS authorization:bearer\ eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVjNDM1NzkzYWU4ZTc5MjAyMjRlZTc5NyIsImNhcGFiaWxpdGllcyI6WyJyZWFkLHdyaXRlIl0sInR5cGUiOiJ1c2VyIiwiaWF0IjoxNTQ3OTE3MjAzLCJleHAiOjE1NDc5MTgxMDN9.j-lljuxYaBXY0XK6nDuziWP6mWfLalcqXa9dZz4oLRQ`
+# Change user token into a Key
+USER_KEY=$(http POST :3000/key authorization:bearer\ $USER_TOKEN)
+```
 
+## Create an Admin
+
+```bash
+ROLE_NAME=admin
+USER_NAME=root
+CAPABILITIES='["read","write","update","delete"]'
+
+# creates a user role and captures the JWT in $USER_TOKEN
+ROLE_TOKEN=$(http -h POST :3000/newRole role=$ROLE_NAME capabilities:=$CAPABILITIES | grep token | awk '{print $2}')
+
+# Create a admin with the role
+ADMIN_TOKEN=$(http POST :3000/signup username=$USER_NAME password=yo role=admin)
+
+# Change admin token into a Key
+ADMIN_KEY=$(http POST :3000/key authorization:bearer\ $ADMIN_TOKEN)
+```
+
+## Create a Player
+
+Requires `$ADMIN_KEY`
+
+```bash
+NAME=playertest
+POSITION=P
+THROWS=R
+BATS=R
+TEAM=CATS
+http POST :3000/api/v1/players name=$NAME position=$POSITION throws=$THROWS bats=$BATS team=$TEAM authorization:bearer\ $ADMIN_KEY
+```
+
+## Demonstrate Failure of a user to create a Player
+
+Requires `$USER_KEY`
+
+```bash
+NAME=playertest
+POSITION=P
+THROWS=R
+BATS=R
+TEAM=CATS
+http POST :3000/api/v1/players name=$NAME position=$POSITION throws=$THROWS bats=$BATS team=$TEAM authorization:bearer\ $USER_KEY
+
+# You should get an invalid userid/password error
+```
+## Create a Team
+
+Requires `$ADMIN_KEY`
+
+```bash
+NAME=CATS
+http POST :3000/api/v1/teams name=$NAME authorization:bearer\ $ADMIN_KEY
+```
+
+## Demonstrate Failure of a user to create a team
+
+Requires `$USER_KEY`
+
+```bash
+NAME=CATS
+http POST :3000/api/v1/teams name=$NAME authorization:bearer\ $USER_KEY
+# You should get an invalid userid/password error
+```
+
+## User can display team and play info
+Requires `$USER_KEY`
+
+```bash
+http :3000/api/v1/teams authorization:bearer\ $USER_KEY
+http :3000/api/v1/players authorization:bearer\ $USER_KEY
+```
+## ADMIN can Change a Player
+
+Requires `$ADMIN_KEY`
+
+```bash
+NAME=playertest
+POSITION=P
+THROWS=L
+BATS=R
+TEAM=CATS
+
+# get the user id
+USER_ID=$(http :3000/api/v1/players authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http PUT :3000/api/v1/players/$USER_ID name=$NAME position=$POSITION throws=$THROWS bats=$BATS team=$TEAM authorization:bearer\ $ADMIN_KEY
+```
+
+## ADMIN can Change a TEAM
+
+Requires `$ADMIN_KEY`
+
+```bash
+NAME=DOGS
+
+# get the user id
+TEAM_ID=$(http :3000/api/v1/teams authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http PUT :3000/api/v1/teams/$TEAM_ID name=$NAME authorization:bearer\ $ADMIN_KEY
+```
+
+## USER cannot change a player
+
+Requires `$USER_KEY`
+
+```bash
+NAME=playertest
+POSITION=P
+THROWS=L
+BATS=R
+TEAM=CATS
+
+# get the user id
+USER_ID=$(http :3000/api/v1/players authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http PUT :3000/api/v1/players/$USER_ID name=$NAME position=$POSITION throws=$THROWS bats=$BATS team=$TEAM authorization:bearer\ $USER_KEY
+
+# should throw an error
+```
+
+## USER cannot change a team
+Requires `$USER_KEY`
+
+```bash
+NAME=DOGS
+
+# get the user id
+TEAM_ID=$(http :3000/api/v1/teams authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http PUT :3000/api/v1/teams/$TEAM_ID name=$NAME authorization:bearer\ $USER_KEY
+# should throw an error
+```
+
+## ADMIN can delete a player
+Requires `$ADMIN_KEY`
+
+```bash
+
+# get the user id
+USER_ID=$(http :3000/api/v1/players authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http DELETE :3000/api/v1/players/$USER_ID authorization:bearer\ $ADMIN_KEY
+```
+
+
+## ADMIN can delete a team
+
+Requires `$ADMIN_KEY`
+
+```bash
+
+# get the user id
+TEAM_ID=$(http :3000/api/v1/teams authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http DELETE :3000/api/v1/teams/$TEAM_ID authorization:bearer\ $ADMIN_KEY
+```
+
+## USER cannot delete a player
+Requires `$USER_KEY`
+
+```bash
+
+# get the user id
+USER_ID=$(http :3000/api/v1/players authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http DELETE :3000/api/v1/players/$USER_ID authorization:bearer\ $USER_KEY
+# should throw an error
+```
+
+
+## USER cannot delete a team
+
+Requires `$USER_KEY`
+
+```bash
+
+# get the user id
+TEAM_ID=$(http :3000/api/v1/teams authorization:bearer\ $USER_KEY | jq -r .results[0]._id)
+
+
+http DELETE :3000/api/v1/teams/$TEAM_ID authorization:bearer\ $USER_KEY
+# should throw an error
+```
 
 * How do you run tests?
 * What assertions were made?
