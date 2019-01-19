@@ -61,7 +61,7 @@ users.statics.createFromOauth = function(email) {
 };
 
 users.statics.authenticateToken = function(token) {
-  
+  console.log('entering the authenticateToken');
   if ( usedTokens.has(token ) ) {
     return Promise.reject('Invalid Token');
   }

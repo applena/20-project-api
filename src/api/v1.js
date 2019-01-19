@@ -26,7 +26,7 @@ router.use('/api/v1/doc/', swaggerUI.serve, swaggerUI.setup(swaggerDocs));
 
 // API Routes
 router.get('/api/v1/:model', auth('read'), handleGetAll);
-router.post('/api/v1/:model', auth(), handlePost);
+router.post('/api/v1/:model', auth('read,write'), handlePost);
 
 router.get('/api/v1/:model/:id', auth(), handleGetOne);
 router.put('/api/v1/:model/:id', auth(), handlePut);
