@@ -12,7 +12,7 @@
 * [front-end](http://xyz.com) (when applicable)
 
 #### Documentation
-* [swagger](http://xyz.com) (API assignments only)
+* [swagger](http://localhost:3000/swagger/) (API assignments only)
 * [jsdoc](http://xyz.com) (All assignments)
 
 ### Modules

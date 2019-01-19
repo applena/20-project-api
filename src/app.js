@@ -9,6 +9,9 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('../swaggerDocs/swagger.json');
+
 
 // Esoteric Resources
 const errorHandler = require('./middleware/500.js');
@@ -32,6 +35,9 @@ app.use('/docs', express.static('docs'));
 // Routes
 app.use(v1Router);
 app.use(authRouther);
+
+// Swagger
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Catchalls
 app.use(notFound);
