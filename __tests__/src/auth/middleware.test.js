@@ -67,7 +67,7 @@ describe('Auth Middleware', () => {
           done();
         });
 
-    }); // it()
+    }); 
 
     it('fails a login for a user (admin) with an incorrect bearer token', () => {
 
@@ -87,7 +87,7 @@ describe('Auth Middleware', () => {
       middleware(req, res, next)
       expect(next).toHaveBeenCalledWith(errorMessage);
 
-    }); // it()
+    }); 
 
     it('logs in an admin user with the right credentials', (done) => {
 
@@ -107,7 +107,7 @@ describe('Auth Middleware', () => {
           done();
         });
 
-    }); // it()
+    }); 
 
     // this test borrows the token gotten from the previous it() ... not great practice
     // but we're using an in-memory db instance, so we need a way to get the user ID
@@ -129,7 +129,7 @@ describe('Auth Middleware', () => {
           done();
         });
 
-    }); // it()
+    }); 
 
   });
 
@@ -152,7 +152,7 @@ describe('Auth Middleware', () => {
           done();
         });
 
-    }); // it()
+    });
 
     it('grants access when a user has permission', (done) => {
 
@@ -171,9 +171,9 @@ describe('Auth Middleware', () => {
           done();
         });
 
-    }); // it()
+    }); 
 
-  }); // describe()
+  });
 
 });
 
