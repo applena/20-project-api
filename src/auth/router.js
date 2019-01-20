@@ -30,7 +30,7 @@ authRouter.post('/signin', auth(), (req, res, next) => {
 });
 
 authRouter.post('/newRole', (req, res, next) => {
-  console.log(req.body);
+  //console.log(req.body);
   let role = new Role(req.body);
   role.save()
     .then(results => {

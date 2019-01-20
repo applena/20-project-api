@@ -3,23 +3,24 @@
 const rootDir = process.cwd();
 const players = require(`${rootDir}/src/models/players/players-model.js`);
 
-const supergoose = require('../supergoose.js');
+const supergoose = require('../../supergoose.js');
 
 beforeAll(supergoose.startDB);
 afterAll(supergoose.stopDB);
 
 describe('Players Model', () => {
-  it('can post() a new player', () => {
+  it('can post() a new player', (done) => {
     let obj = {name:'John', bats:'R',throws:'R',position:'C',team:'Bunnies'};
     return players.post(obj)
       .then(record => {
         Object.keys(obj).forEach(key =>{
           expect(record[key]).toEqual(obj[key]);
+          done();
         });
       });
   });
 
-  it('can get() a player', () => {
+  it('can get() a player', (done) => {
     let obj = {name:'John', bats:'R',throws:'R',position:'C',team:'Bunnies'};
     return players.post(obj)
       .then(record => {
@@ -27,6 +28,7 @@ describe('Players Model', () => {
           .then(player => {
             Object.keys(obj).forEach(key =>{
               expect(player[0][key]).toEqual(obj[key]);
+              done();
             });
           });
       });
