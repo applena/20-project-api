@@ -8,7 +8,7 @@
 ### Links and Resources
 [![Build Status](https://www.travis-ci.com/applena/20-project-api.svg?branch=master)](https://www.travis-ci.com/applena/20-project-api)
 * [repo](https://github.com/applena/20-project-api)
-* [travis](https://www.travis-ci.com/applena/20-project-api)
+* [travis](https://www.travis-ci.com/applena/20-project-api.svg?branch=master)
 * [back-end](https://authapiserver.herokuapp.com/) (when applicable)
 
 #### Documentation
