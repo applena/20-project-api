@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: auth/roles-model.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,53 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: auth/roles-model.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>'use strict';
 
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken');
 
-    <h3> </h3>
+const TOKEN_EXPIRE = process.env.TOKEN_LIFETIME || '5m';
+const SECRET = process.env.SECRET || 'foobar';
 
+const roles = new mongoose.Schema({
+  role: {type: String, required:true},
+  capabilities: {type: Array, required:true},
+});
 
+/**
+ * Generates new token based on requested type
+ * @param {string} type denotes token type - key or user
+ * @returns generated token
+ */
+roles.methods.generateToken = function(type) {
+  
+  let token = {
+    id: this._id,
+    capabilities: this.capabilities,
+    type: this.role || 'user',
+  };
+  
+  let options = {};
+  if ( type !== 'key' &amp;&amp; !! TOKEN_EXPIRE ) { 
+    options = { expiresIn: TOKEN_EXPIRE };
+  }
+  
+  return jwt.sign(token, SECRET, options);
+};
 
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports = mongoose.model('roles', roles);
+</code></pre>
+        </article>
+    </section>
 
 
 

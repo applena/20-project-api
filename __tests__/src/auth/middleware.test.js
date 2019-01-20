@@ -27,7 +27,7 @@ beforeAll(async (done) => {
   const adminRole = await new Roles(roles.admin).save();
   const editorRole = await new Roles(roles.editor).save();
   const userRole = await new Roles(roles.user).save();
-  done()
+  done();
 });
 
 afterAll(stopDB);
@@ -62,10 +62,10 @@ describe('Auth Middleware', () => {
       let middleware = auth();
 
       return middleware(req, res, next)
-      .then(() => {
-        expect(next).toHaveBeenCalledWith(errorMessage);
-        done();
-      });
+        .then(() => {
+          expect(next).toHaveBeenCalledWith(errorMessage);
+          done();
+        });
 
     }); // it()
 
@@ -101,11 +101,11 @@ describe('Auth Middleware', () => {
       let middleware = auth();
 
       return middleware(req,res,next)
-      .then( () => {
-        cachedToken = req.token;
-        expect(next).toHaveBeenCalledWith();
-        done();
-      });
+        .then( () => {
+          cachedToken = req.token;
+          expect(next).toHaveBeenCalledWith();
+          done();
+        });
 
     }); // it()
 
@@ -124,10 +124,10 @@ describe('Auth Middleware', () => {
       let middleware = auth();
 
       return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith();
-        done();
-      });
+        .then( () => {
+          expect(next).toHaveBeenCalledWith();
+          done();
+        });
 
     }); // it()
 
@@ -147,10 +147,10 @@ describe('Auth Middleware', () => {
       let middleware = auth('godpower');
 
       return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith(errorMessage);
-        done();
-      });
+        .then( () => {
+          expect(next).toHaveBeenCalledWith(errorMessage);
+          done();
+        });
 
     }); // it()
 
@@ -166,10 +166,10 @@ describe('Auth Middleware', () => {
       let middleware = auth('delete');
 
       return middleware(req,res,next)
-      .then( () => {
-        expect(next).toHaveBeenCalledWith();
-        done();
-      });
+        .then( () => {
+          expect(next).toHaveBeenCalledWith();
+          done();
+        });
 
     }); // it()
 

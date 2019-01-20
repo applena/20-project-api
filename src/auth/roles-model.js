@@ -3,7 +3,6 @@
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
 
-const SINGLE_USE_TOKENS = !!process.env.SINGLE_USE_TOKENS;
 const TOKEN_EXPIRE = process.env.TOKEN_LIFETIME || '5m';
 const SECRET = process.env.SECRET || 'foobar';
 
@@ -12,6 +11,11 @@ const roles = new mongoose.Schema({
   capabilities: {type: Array, required:true},
 });
 
+/**
+ * Generates new token based on requested type
+ * @param {string} type denotes token type - key or user
+ * @returns generated token
+ */
 roles.methods.generateToken = function(type) {
   
   let token = {
