@@ -61,17 +61,22 @@ users.statics.createFromOauth = function(email) {
 };
 
 users.statics.authenticateToken = function(token) {
-  
+  console.log('entering the authenticateToken');
   if ( usedTokens.has(token ) ) {
+    console.log('token used');
     return Promise.reject('Invalid Token');
   }
   
   try {
     let parsedToken = jwt.verify(token, SECRET);
+    console.log({parsedToken});
     (SINGLE_USE_TOKENS) && parsedToken.type !== 'key' && usedTokens.add(token);
     let query = {_id: parsedToken.id};
     return this.findOne(query);
-  } catch(e) { throw new Error('Invalid Token'); }
+  } catch(e) { 
+    console.error('authenticateToken error',e);
+    throw new Error('Invalid Token'); 
+  }
   
 };
 

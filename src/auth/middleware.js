@@ -5,6 +5,7 @@ const User = require('./users-model.js');
 module.exports = (capability) => {
   
   return (req, res, next) => {
+    // console.log('headers', req.headers);
 
     try {
       let [authType, authString] = req.headers.authorization.split(/\s+/);
@@ -35,12 +36,15 @@ module.exports = (capability) => {
     }
 
     function _authBearer(authString) {
+      console.log('entering the _authBearer function');
       return User.authenticateToken(authString)
         .then(user => _authenticate(user))
         .catch(_authError);
     }
 
     function _authenticate(user) {
+      console.log('entering the _authenticate function', {capability});
+
       if ( user && (!capability || (user.can(capability))) ) {
         req.user = user;
         req.token = user.generateToken();
@@ -51,7 +55,8 @@ module.exports = (capability) => {
       }
     }
 
-    function _authError() {
+    function _authError(err) {
+      console.error('_authError', err);
       next('Invalid User ID/Password');
     }
 

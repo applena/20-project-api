@@ -42,7 +42,7 @@ describe('Auth Router', () => {
       let encodedToken;
       let id;
       
-      it('can create one', () => {
+      it('can create one', (done) => {
         return mockRequest.post('/signup')
           .send(users[userType])
           .then(results => {
@@ -51,26 +51,29 @@ describe('Auth Router', () => {
             encodedToken = results.text;
             expect(token.id).toBeDefined();
             expect(token.capabilities).toBeDefined();
+            done();
           });
       });
 
-      it('can signin with basic', () => {
+      it('can signin with basic', (done) => {
         return mockRequest.post('/signin')
           .auth(users[userType].username, users[userType].password)
           .then(results => {
             var token = jwt.verify(results.text, process.env.SECRET);
             expect(token.id).toEqual(id);
             expect(token.capabilities).toBeDefined();
+            done();
           });
       });
 
-      it('can signin with bearer', () => {
+      it('can signin with bearer', (done) => {
         return mockRequest.post('/signin')
           .set('Authorization', `Bearer ${encodedToken}`)
           .then(results => {
             var token = jwt.verify(results.text, process.env.SECRET);
             expect(token.id).toEqual(id);
             expect(token.capabilities).toBeDefined();
+            done();
           });
       });
 

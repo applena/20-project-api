@@ -5,17 +5,19 @@
  * @module src/app
  */
 
-const cwd = process.cwd();
-
 // 3rd Party Resources
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocs = require('../swaggerDocs/swagger.json');
+
 
 // Esoteric Resources
-const errorHandler = require( `${cwd}/src/middleware/500.js`);
-const notFound = require( `${cwd}/src/middleware/404.js` );
-const v1Router = require( `${cwd}/src/api/v1.js` );
+const errorHandler = require('./middleware/500.js');
+const notFound = require( './middleware/404.js' );
+const v1Router = require( './api/v1.js' );
+const authRouther = require('./auth/router');
 
 // Prepare the express app
 const app = express();
@@ -32,6 +34,10 @@ app.use('/docs', express.static('docs'));
 
 // Routes
 app.use(v1Router);
+app.use(authRouther);
+
+// Swagger
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 // Catchalls
 app.use(notFound);
