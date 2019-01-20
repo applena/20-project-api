@@ -1,29 +1,85 @@
 ![CF](http://i.imgur.com/7v5ASc8.png) LAB
 =================================================
 
-## Project Name
+## Auth/API Server
 
-### Author: Student/Group Name
+### Author: Lena Eivy and Brent Woodward
 
 ### Links and Resources
-* [repo](http://xyz.com)
-* [travis](http://xyz.com)
-* [back-end](http://xyz.com) (when applicable)
-* [front-end](http://xyz.com) (when applicable)
+[![Build Status](https://www.travis-ci.com/applena/20-project-api.svg?branch=master)](https://www.travis-ci.com/applena/20-project-api)
+* [repo](https://github.com/applena/20-project-api)
+* [travis](https://www.travis-ci.com/applena/20-project-api)
+* [back-end](https://authapiserver.herokuapp.com/) (when applicable)
 
 #### Documentation
-* [swagger](http://localhost:3000/swagger/) (API assignments only)
-* [jsdoc](http://xyz.com) (All assignments)
+* [swagger](https://authapiserver.herokuapp.com/swagger/) (API assignments only)
+* [jsdoc](https://authapiserver.herokuapp.com/docs/) (All assignments)
 
 ### Modules
-#### `modulename.js`
+#### `models/mongo.js`
 ##### Exported Values and Methods
+###### `Model(schema) -> Class`
+Builds a Class according to the schema that is passed to it to model data.
 
-###### `foo(thing) -> string`
-Usage Notes or examples
+#### `middleware/500.js`
+##### Exported Values and Methods
+###### `(err, req, res, next) -> res.status(500)`
+Catches server errors and displays 500 status message with error information.
 
-###### `bar(array) -> array`
-Usage Notes or examples
+#### `middleware/404.js`
+##### Exported Values and Methods
+###### `(req, res, next) -> res.status(404)`
+Catches route errors and displays 404 status message with error information.
+
+#### `middleware/model-finder.js`
+##### Exported Values and Methods
+###### `(req, res, next) -> require(string for filepath)`
+Parses request object for model parameter. Requires in correct file using template literal and this param.
+
+#### `auth/middleware.js`
+##### Exported Values and Methods
+###### `(req, res, next) -> (req, res, next)`
+Processes functions based on request header content. Authorizes and issues JWT tokens.
+
+#### `auth/router.js`
+##### Exported Values and Methods
+###### `express router`
+Builds authentication based routes for signup, signin,create new role, oauth, and create key.
+
+#### `api/v1.js`
+##### Exported Values and Methods
+###### `express router`
+Buildes API routes for accessing database information to get, get all, post, put, and delete.
+
+#### `auth/roles-model.js`
+##### Exported Values and Methods
+###### `mongoose schema and model`
+Schema/Model for creating new roles and assigning role based capabilities.
+
+#### `auth/users-model.js`
+##### Exported Values and Methods
+###### `instance of user class using schema`
+Model for creating new users.
+
+#### `models/players/players-model.js`
+##### Exported Values and Methods
+###### `instance of player class using schema`
+Model for creating new players.
+
+#### `models/players/players-schema.js`
+##### Exported Values and Methods
+###### `mongoose schema`
+Schema for formatting data for use in the database.
+
+#### `models/teams/teams-model.js`
+##### Exported Values and Methods
+###### `instance of teams class using schema`
+Model for creating new teams and 
+
+#### `models/teams/teams-schema.js`
+##### Exported Values and Methods
+###### `mongoose schema`
+Schema for formatting data for use in the database.
 
 ### Setup
 #### `.env` requirements

@@ -9,25 +9,20 @@ beforeAll(supergoose.startDB);
 afterAll(supergoose.stopDB);
 
 describe('api server', () => {
-
   it('should respond with a 404 on an invalid route', () => {
-
     return mockRequest
       .get('/foo')
       .then(results => {
         expect(results.status).toBe(404);
       });
-
   });
 
   it('should respond with a 404 on an invalid method', () => {
-
     return mockRequest
       .post('/api/v1/notes/12')
       .then(results => {
         expect(results.status).toBe(404);
       });
-
   });
 
   it('should respond properly on request to /api/v1/teams', () => {

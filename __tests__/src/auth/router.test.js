@@ -27,21 +27,17 @@ beforeAll(async (done) => {
   const admin = await new Roles(roles.admin).save();
   const editor = await new Roles(roles.editor).save();
   const user = await new Roles(roles.user).save();
-  done()
+  done();
 });
-
 
 afterAll(supergoose.stopDB);
 
-describe('Auth Router', () => {
-  
+describe('Auth Router', () => {  
   Object.keys(users).forEach( userType => {
     
     describe(`${userType} users`, () => {
-      
       let encodedToken;
       let id;
-      
       it('can create one', (done) => {
         return mockRequest.post('/signup')
           .send(users[userType])

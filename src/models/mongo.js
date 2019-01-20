@@ -1,11 +1,15 @@
 'use strict';
 
-/** Class representing a generic mongo model. */
+/**
+ *
+ * Class representing a generic mongo model.
+ * @class Model
+ */
 class Model {
 
   /**
    * Model Constructor
-   * @param schema {object} - mongo schema
+   * @param schema {object} - Mongo Schema
    */
   constructor(schema) {
     this.schema = schema;

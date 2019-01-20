@@ -35,16 +35,16 @@ authRouter.post('/newRole', (req, res, next) => {
   role.save()
     .then(results => {
       Role.findOne({_id: results._id})
-      .then(role => {
-        req.token = role.generateToken();
-        req.role = role;
-        res.set('token', req.token);
-        res.cookie('auth', req.token);
-        res.status(200).send(role.name);
-        })
+        .then(role => {
+          req.token = role.generateToken();
+          req.role = role;
+          res.set('token', req.token);
+          res.cookie('auth', req.token);
+          res.status(200).send(role.name);
+        });
     })
-    .catch(next)
-})
+    .catch(next);
+});
 
 authRouter.get('/oauth', (req,res,next) => {
   oauth.authorize(req)
