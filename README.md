@@ -83,15 +83,25 @@ Schema for formatting data for use in the database.
 
 ### Setup
 #### `.env` requirements
-* `PORT` - Port Number
+* `PORT` - port 3000 or connect to heroku
 * `MONGODB_URI` - URL to the running mongo instance/db
 
 #### Running the app
 * `npm start`
-* Endpoint: `/foo/bar/`
-  * Returns a JSON object with abc in it.
-* Endpoint: `/bing/zing/`
-  * Returns a JSON object with xyz in it.
+* Endpoint: `/signup`
+  * Returns a token after successful signup providing a username and passwords
+* Endpoint: `/signin`
+  * Returns a token after successfully signing in
+* Endpoint: `/key`
+  * Returns a key in exchange for a working token.
+* Endpoint: `/api/v1/players`
+  * Returns a JSON list of all the players
+* Endpoint: `/api/v1/teams`
+  * Returns a JSON object with all the teams.
+* Endpoint: `/api/v1/players/id`
+  * Returns a JSON object with the player with the specified id.
+* Endpoint: `/api/v1/teams/id`
+  * Returns a JSON object with the team wiht the specifed id.
   
 # Tests
 
@@ -302,9 +312,63 @@ http DELETE :3000/api/v1/teams/$TEAM_ID authorization:bearer\ $USER_KEY
 # should throw an error
 ```
 
-* How do you run tests?
-* What assertions were made?
-* What assertions need to be / should be made?
+## RUNNING THE UNIT TESTS
+* `npm test`
+* asserting that all routes are reachable and deliver what we think they should
+* asserting that the signup route signs up a user
+* asserting that the signin route sings in a user
+* asserting that the key route returns a key that never expires and can be used multiple times.
 
-#### UML
-Link to an image of the UML for your application and response to events
+## How do I add models?
+* To add additional models, you can simply make a new class that extends the model you want. For example, 
+```class Teams extends Model {}```
+* The teams model is extending the Model. You can extend the Model to create almost anything you want.
+
+## How do I add new OAuth Providers?
+* To add a new OAuth provider, use the Google OAuth code as a guide. You will need to visit the OAuth provider that you want to use and follow their documentaiton, but you should be able to adapt the Google code to make it easier. 
+
+## How do I identify an OAUth provider
+* This will depend on what your needs are and who your clients are. OAuth is a good option as is Wordpress and Google. 
+
+## How do I setup my .env? How do I set that up remotely?
+* To set up your .env, you will need to specify the following variable:
+```
+MONGODB_URI=mongodb://localhost:27017/users
+PORT=3000
+SECRET=changeit
+TOKEN_LIFETIME=900000
+SINGLE_USE_TOKENS=true
+```
+
+## What routes are supported?
+* user routes:
+/signup
+/signin
+/key
+/newRole
+/oauth
+
+* teams routes:
+/api/v1/teams
+/api/v1/teams/id
+
+* players routes:
+/api/v1/players
+/api/v1/players/id
+
+## How do I call them and what data do they expect?
+* To call the routes, go to the heroku site or your local host and add the route to the end of the URL
+
+## expected data
+/signup => a one time use temporary token
+/signin => a one time use temporary token
+/newRole => a one time use token
+/oauth => a one time use token
+/key => a key that never expires and can be resued
+/api/v1/teams => a JSON data set of all the teams in the database
+/api/v1/teams/id => a JSON object with info about the team whos id you specified
+/api/v1/players => a JSON data set of all the players in the database
+/api/v1/playsers/id => a JSON object with info about the players whoees id you specified
+
+## What format does data come back?
+* Data is returned in the form of a JSON object.

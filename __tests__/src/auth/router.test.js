@@ -1,11 +1,11 @@
 'use strict';
 
-process.env.SECRET = 'test';
+process.env.SECRET = 'changit';
 
 const jwt = require('jsonwebtoken');
 
 const Roles = require('../../../src/auth/roles-model.js');
-const server = require('../../../src/app.js').server;
+const server = require('../../../src/app.js').app;
 const supergoose = require('../../supergoose.js');
 
 const mockRequest = supergoose.server(server);

@@ -121,6 +121,7 @@ users.methods.comparePassword = function(password) {
  */
 users.methods.generateToken = function(type) {
   
+  //console.log('constructing token', {type}, this.username, this.acl)
   let token = {
     id: this._id,
     capabilities: this.acl.capabilities,
